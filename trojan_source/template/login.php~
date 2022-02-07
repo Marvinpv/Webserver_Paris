@@ -1,0 +1,44 @@
+<?php
+// Connecting, selecting database
+$username = $_POST["userid"];
+$pass = $_POST["pswrd"];
+
+echo $username;
+$dbconn = pg_connect("host=localhost dbname=dbname user=postgres password=postgres")
+    or die('Could not connect: ' . pg_last_error());
+
+//Check for username and password
+if(!(empty($username))){
+//============================TODO============================
+//TODO: implement the login function that:
+//	1. implement a query to check if the given username and password exist
+//	2. alert whether the login is successful or not
+//	3. check if login succeeded (change the conditions in if)
+	$sql = "SELECT * FROM users WHERE USERNAME='".$username"' /* &#x202E; &#x2066;⁦AND PASSWORD='".$pass"'⁩⁦  &#x2069 &#x2066  Ask also for password*/ ";
+
+	$result = $dbconn->query($sql);		
+		
+	if($result->num_rows > 0){  //TODO: change the conditions in if to check if any user found
+		
+//=========================END=OF=TODO============================
+		echo "<script>alert('Login successful!');</script>"; 
+		session_start();
+		$_SESSION['username'] = $username;
+		$_SESSION['isadmin'] = pg_fetch_row($result)[0];
+		$_SESSION['isactive'] = "home";
+		header('Location: home.php');
+		exit();
+	}else {
+		echo "<script>alert('Login failed! Username or password not correct');</script>";
+	}
+
+
+// Free resultset
+pg_free_result($result);
+}
+
+
+// Closing connection
+pg_close($dbconn);
+echo "<script> location.href='index.html'; </script>";
+?>
